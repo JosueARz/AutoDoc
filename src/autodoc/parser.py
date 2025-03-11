@@ -75,7 +75,8 @@ class CodeParser:
             "Evalúa la calidad de la documentación en el siguiente código y califica cada elemento del 1 al 10.\n"
             "Clasificación: 'Muy bien documentado', 'Documentación aceptable', 'Falta documentación', 'Mal documentado'.\n"
             "Si está mal documentado, sugiere mejoras.\n"
-            "Devuelve la respuesta en este formato: 'Nombre: [nombre] | Puntuación: [1-10] | Clasificación: [texto]'.\n\n"
+            "Devuelve la respuesta en este formato exacto:\n"
+            "'Nombre: [nombre] | Puntuación: [1-10] | Clasificación: [texto]'.\n\n"
         )
 
         for elem in elements:
@@ -89,7 +90,7 @@ class CodeParser:
             )
 
             evaluation_text = response["choices"][0]["message"]["content"]
-            
+
             # Extraer evaluaciones usando regex
             evaluations = {}
             pattern = r"Nombre: (.*?) \| Puntuación: (\d+) \| Clasificación: (.*?)$"
@@ -119,3 +120,23 @@ class CodeParser:
                 elem["clasificación"] = "No se pudo evaluar"
 
         return elements
+
+    def generate_markdown_report(self, elements: List[Dict[str, str]], output_file="docs/evaluacion.md"):
+        """
+        Genera un reporte en formato Markdown con las evaluaciones.
+
+        :param elements: Lista de elementos evaluados.
+        :param output_file: Ruta del archivo Markdown de salida.
+        """
+        with open(output_file, "w", encoding="utf-8") as file:
+            file.write("# 📄 Reporte de Evaluación de Documentación\n\n")
+            file.write("Este archivo contiene la evaluación de la documentación del código analizado.\n\n")
+
+            for resultado in elements:
+                file.write(f"## 🔹 {resultado['tipo']}: {resultado['nombre']}\n")
+                file.write(f"**📜 Documentado:**\n```\n{resultado['docstring']}\n```\n")
+                file.write(f"**🎯 Puntuación:** {resultado.get('puntuación', 'No evaluado')}\n\n")
+                file.write(f"**🏆 Clasificación:** {resultado.get('clasificación', 'No evaluado')}\n\n")
+                file.write("---\n\n")
+
+        print(f"✅ Reporte generado: {output_file}")

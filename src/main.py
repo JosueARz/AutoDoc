@@ -10,13 +10,5 @@ if __name__ == "__main__":
     # Evaluar con OpenAI
     evaluaciones = parser.evaluate_with_openai(resultados)
 
-    # Mostrar resultados
-    print("\n📄 Evaluación de documentación con OpenAI:")
-    for resultado in evaluaciones:
-        print("\n───────────────────────────────────────")
-        print(f"🔹 Tipo: {resultado['tipo']}")
-        print(f"   🏷 Nombre: {resultado['nombre']}")
-        print(f"   📜 Documentado: {resultado['docstring']}")
-        print(f"   🎯 Puntuación: {resultado.get('puntuación', 'No evaluado')}")
-        print(f"   🏆 Clasificación: {resultado.get('clasificación', 'No evaluado')}")
-    print("\n───────────────────────────────────────")
+    # Generar reporte en Markdown
+    parser.generate_markdown_report(evaluaciones, "docs/evaluacion.md")
