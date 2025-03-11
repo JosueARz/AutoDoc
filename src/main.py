@@ -1,12 +1,22 @@
 from autodoc.parser import CodeParser
 
-archivo_python = "tests/mocks/mixed_practices.py"
-parser = CodeParser(archivo_python)
-resultados = parser.extract_docstrings()
+if __name__ == "__main__":
+    archivo_python = "tests/mocks/mixed_practices.py"
+    parser = CodeParser(archivo_python)
 
-print("\n📄 Análisis del código:")
-for resultado in resultados:
-    print(f"\n🔹 Tipo: {resultado['tipo']}")
-    print(f"   🏷 Nombre: {resultado['nombre']}")
-    print(f"   📜 Documentado: {resultado['documentado']}")
-    print(f"   ⚠️ Gravedad: {resultado['gravedad']}")
+    # Extraer información del código
+    resultados = parser.extract_docstrings()
+
+    # Evaluar con OpenAI
+    evaluaciones = parser.evaluate_with_openai(resultados)
+
+    # Mostrar resultados
+    print("\n📄 Evaluación de documentación con OpenAI:")
+    for resultado in evaluaciones:
+        print("\n───────────────────────────────────────")
+        print(f"🔹 Tipo: {resultado['tipo']}")
+        print(f"   🏷 Nombre: {resultado['nombre']}")
+        print(f"   📜 Documentado: {resultado['docstring']}")
+        print(f"   🎯 Puntuación: {resultado.get('puntuación', 'No evaluado')}")
+        print(f"   🏆 Clasificación: {resultado.get('clasificación', 'No evaluado')}")
+    print("\n───────────────────────────────────────")
